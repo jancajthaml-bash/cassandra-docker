@@ -103,8 +103,9 @@ USER 		root
 
 RUN			mv ${CASSANDRA_HOME}/conf/* ${CASSANDRA_CONFIG}
 
+COPY 		opt/cassandra.yml ${CASSANDRA_CONFIG}/cassandra.yml
+RUN 		a=$(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${CASSANDRA_CONFIG}/cassandra.yml);echo "$a" > ${CASSANDRA_CONFIG}/cassandra.yml
 
-COPY 		opt/cassandra.yml /${CASSANDRA_CONFIG}/cassandra.yml
 COPY 		opt/commitlog_archiving.properties /${CASSANDRA_CONFIG}/commitlog_archiving.properties
 
 RUN			chmod +x ${CASSANDRA_CONFIG}/*.sh
@@ -114,7 +115,7 @@ ENV			PATH=$PATH:${CASSANDRA_HOME}/bin \
 
 WORKDIR		${CASSANDRA_HOME}
 
-VOLUME		${CASSANDRA_PERSIST_DIR}
+VOLUME 		[${CASSANDRA_PERSIST_DIR}]
 
 COPY 		opt/single.sh /usr/local/sbin/single
 COPY 		opt/setup.sh /usr/local/sbin/cassandra-setup
